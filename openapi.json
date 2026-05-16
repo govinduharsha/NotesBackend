@@ -1,0 +1,34 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Notes App API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register new user",
+        "requestBody": {"content": {"application/json": {"schema": {"type":"object","properties":{"email":{"type":"string"},"password":{"type":"string"}}}}}},
+        "responses": {"201":{"description":"Created"}}
+      }
+    },
+    "/auth/login": {
+      "post": {"summary":"Login","requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"email":{"type":"string"},"password":{"type":"string"}}}}},"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"access_token":{"type":"string"}}}}}}}
+    },
+    "/notes": {
+      "get": {"summary":"List notes","security":[{"bearerAuth":[]}]},
+      "post": {"summary":"Create note","security":[{"bearerAuth":[]}]}
+    },
+    "/notes/{id}": {
+      "get": {"summary":"Get note","security":[{"bearerAuth":[]}]},
+      "put": {"summary":"Update note","security":[{"bearerAuth":[]}]},
+      "delete": {"summary":"Delete note","security":[{"bearerAuth":[]}]}
+    },
+    "/notes/{id}/share": {"post": {"summary":"Share note","security":[{"bearerAuth":[]}]}}
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {"type":"http","scheme":"bearer","bearerFormat":"JWT"}
+    }
+  }
+}

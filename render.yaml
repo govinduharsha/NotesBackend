@@ -1,0 +1,16 @@
+# Render manifest - update `repo` and `branch` to match your GitHub repository before deploying
+services:
+  - type: web
+    name: notes-app-backend
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    branch: main
+    repo: https://github.com/<your-username>/<your-repo>
+    buildCommand: "npm ci"
+    startCommand: "npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"

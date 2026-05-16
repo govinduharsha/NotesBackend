@@ -1,0 +1,5 @@
+# Sample fly.toml - update `app` to your chosen app name or run `fly launch` to generate
+app = "notes-app-yourname"
+
+[build]
+  image = ""
