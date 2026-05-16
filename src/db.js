@@ -28,6 +28,7 @@ export async function initDb() {
     owner_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     content TEXT,
+    pinned BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
   );
@@ -60,6 +61,12 @@ export async function initDb() {
     DO $$ BEGIN
       IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'notes_owner_id_fkey') THEN
         ALTER TABLE notes ADD CONSTRAINT notes_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE;
+      END IF;
+    END $$;
+
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='notes' AND column_name='pinned') THEN
+        ALTER TABLE notes ADD COLUMN pinned BOOLEAN NOT NULL DEFAULT false;
       END IF;
     END $$;
   `;

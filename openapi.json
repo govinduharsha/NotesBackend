@@ -8,27 +8,242 @@
     "/auth/register": {
       "post": {
         "summary": "Register new user",
-        "requestBody": {"content": {"application/json": {"schema": {"type":"object","properties":{"email":{"type":"string"},"password":{"type":"string"}}}}}},
-        "responses": {"201":{"description":"Created"}}
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {"type": "string"},
+                  "password": {"type": "string"}
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Created"}
+        }
       }
     },
     "/auth/login": {
-      "post": {"summary":"Login","requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"email":{"type":"string"},"password":{"type":"string"}}}}},"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object","properties":{"access_token":{"type":"string"}}}}}}}
+      "post": {
+        "summary": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {"type": "string"},
+                  "password": {"type": "string"}
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "/notes": {
-      "get": {"summary":"List notes","security":[{"bearerAuth":[]}]},
-      "post": {"summary":"Create note","security":[{"bearerAuth":[]}]}
+      "get": {
+        "summary": "List notes",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "List of notes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {"$ref": "#/components/schemas/Note"}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create note",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/NewNote"}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Note"}
+              }
+            }
+          }
+        }
+      }
     },
     "/notes/{id}": {
-      "get": {"summary":"Get note","security":[{"bearerAuth":[]}]},
-      "put": {"summary":"Update note","security":[{"bearerAuth":[]}]},
-      "delete": {"summary":"Delete note","security":[{"bearerAuth":[]}]}
+      "get": {
+        "summary": "Get note",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {
+          "200": {
+            "description": "Note details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Note"}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update note",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/NewNote"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated note",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/Note"}
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete note",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {
+          "204": {"description": "No Content"}
+        }
+      }
     },
-    "/notes/{id}/share": {"post": {"summary":"Share note","security":[{"bearerAuth":[]}]}}
+    "/notes/{id}/share": {
+      "post": {
+        "summary": "Share note",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "share_with_email": {"type": "string"}
+                },
+                "required": ["share_with_email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Note shared"}
+        }
+      }
+    },
+    "/notes/{id}/pin": {
+      "post": {
+        "summary": "Pin note",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {
+          "200": {"description": "Note pinned"}
+        }
+      }
+    },
+    "/notes/{id}/unpin": {
+      "post": {
+        "summary": "Unpin note",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "responses": {
+          "200": {"description": "Note unpinned"}
+        }
+      }
+    },
+    "/about": {
+      "get": {
+        "summary": "About the API",
+        "responses": {
+          "200": {
+            "description": "About information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string"},
+                    "email": {"type": "string"},
+                    "my features": {
+                      "type": "object",
+                      "additionalProperties": {"type": "string"}
+                    }
+                  },
+                  "required": ["name", "email", "my features"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "components": {
     "securitySchemes": {
-      "bearerAuth": {"type":"http","scheme":"bearer","bearerFormat":"JWT"}
+      "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+    },
+    "schemas": {
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "content": {"type": "string"},
+          "pinned": {"type": "boolean"},
+          "created_at": {"type": "string", "format": "date-time"},
+          "updated_at": {"type": "string", "format": "date-time"},
+          "owner_id": {"type": "string"}
+        }
+      },
+      "NewNote": {
+        "type": "object",
+        "properties": {
+          "title": {"type": "string"},
+          "content": {"type": "string"},
+          "pinned": {"type": "boolean"}
+        },
+        "required": ["title"]
+      }
     }
   }
 }
